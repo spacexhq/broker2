@@ -1,0 +1,1 @@
+<?php /**PATH /home/gfzwcacl/public_html/trade/resources/views/home/trading-conditions.blade.php ENDPATH**/ ?>
