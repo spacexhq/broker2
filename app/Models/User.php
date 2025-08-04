@@ -41,7 +41,38 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'l_name', 'email', 'phone', 'country', 'password', 'ref_by', 'status', 'taxtype ','taxamount ','username', 'email_verified_at',
+        'name', 
+        'l_name', 
+        'email', 
+        'phone', 
+        'country', 
+        'username'
+    ];
+
+    /**
+     * The attributes that are NOT mass assignable.
+     * These critical fields should only be updated through explicit methods.
+     *
+     * @var array
+     */
+    protected $guarded = [
+        'id',
+        'password',
+        'ref_by',
+        'status',
+        'taxtype',
+        'taxamount',
+        'email_verified_at',
+        'account_bal',
+        'roi',
+        'bonus',
+        'ref_bonus',
+        'withdrawotp',
+        'taxcode',
+        'withdrawal_code',
+        'remember_token',
+        'two_factor_secret',
+        'two_factor_recovery_codes'
     ];
 
     /**
@@ -102,10 +133,20 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public static function search($search): \Illuminate\Database\Eloquent\Builder
     {
-        return empty($search) ? static::query()
-            : static::query()->where('id', 'like', '%' . $search . '%')
-            ->orWhere('name', 'like', '%' . $search . '%')
-            ->orWhere('username', 'like', '%' . $search . '%')
-            ->orWhere('email', 'like', '%' . $search . '%');
+        if (empty($search)) {
+            return static::query();
+        }
+        
+        // Sanitize search input to prevent SQL injection
+        $sanitizedSearch = filter_var($search, FILTER_SANITIZE_STRING);
+        $sanitizedSearch = trim($sanitizedSearch);
+        
+        // Use parameter binding for safe searching
+        return static::query()->where(function($query) use ($sanitizedSearch) {
+            $query->where('id', 'like', '%' . $sanitizedSearch . '%')
+                  ->orWhere('name', 'like', '%' . $sanitizedSearch . '%')
+                  ->orWhere('username', 'like', '%' . $sanitizedSearch . '%')
+                  ->orWhere('email', 'like', '%' . $sanitizedSearch . '%');
+        });
     }
 }

@@ -25,8 +25,16 @@ class AutoTaskController extends Controller
         auto increment earnings after the increment time
     */
 
-    public function autotopup()
+    public function autotopup($token = null)
     {
+        // Validate cron access token for security
+        $settings = Settings::find(1);
+        $expectedToken = hash('sha256', $settings->site_name . 'cron_secure_token');
+        
+        if ($token !== $expectedToken) {
+            abort(403, 'Unauthorized access to cron endpoint');
+        }
+        
         // automatic roi
         $this->automaticRoi();
 

@@ -38,8 +38,8 @@ Route::post('/reset-password', [NewPasswordController::class, 'store'])
 	->middleware(['guest:' . config('fortify.guard')])
 	->name('password.update');
 
-//cron url
-Route::get('/cron',[AutoTaskController::class, 'autotopup'])->name('cron');
+//cron url - secured with token authentication
+Route::get('/cron/{token}',[AutoTaskController::class, 'autotopup'])->name('cron');
 //Front Pages Route
 Route::get('/', [HomePageController::class, 'index'])->name('home');
 Route::get('terms', [HomePageController::class, 'terms'] )->name('terms');
@@ -69,10 +69,6 @@ Route::get('tradings', function(){
 
 Route::get('trading', function(){
     return view('home.about');
-});
-
-Route::get('terms', function(){
-    return view('home.terms');
 });
 
 Route::get('index', function(){
