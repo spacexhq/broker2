@@ -1,0 +1,59 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+*.md
+
+# Environment files
+.env
+.env.*
+
+# Node modules and build artifacts
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Testing
+tests
+.phpunit.result.cache
+phpunit.xml
+
+# Development files
+.editorconfig
+.styleci.yml
+webpack.mix.js
+package.json
+package-lock.json
+mix-manifest.json
+
+# IDE files
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker files
+docker-compose*
+Dockerfile*
+
+# Temp directories
+temp/
+tmp/
+
+# Storage (will be mounted as volume)
+storage/app/public
+storage/framework/cache
+storage/framework/sessions
+storage/framework/views
+storage/logs
+
+# Cache directories
+bootstrap/cache
