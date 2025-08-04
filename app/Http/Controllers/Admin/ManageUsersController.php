@@ -210,7 +210,30 @@ class ManageUsersController extends Controller
     //Access users account
     public function switchuser($id)
     {
+        // Verify admin has super admin privileges for this sensitive action
+        if (!Auth::guard('admin')->check()) {
+            return redirect()->route('admin.dashboard')->with('error', 'Unauthorized access');
+        }
+        
+        $admin = Auth::guard('admin')->user();
+        if (!$admin || $admin->type !== 'Super Admin') {
+            return redirect()->route('admin.dashboard')->with('error', 'Only Super Admins can switch user accounts');
+        }
+        
         $user = User::where('id', $id)->first();
+        if (!$user) {
+            return redirect()->route('admin.dashboard')->with('error', 'User not found');
+        }
+        
+        // Log this sensitive action for audit purposes
+        Activity::create([
+            'user' => $user->id,
+            'action' => "Admin {$admin->name} switched to user account",
+            'ip' => request()->ip(),
+            'country' => 'N/A',
+            'source' => 'Admin Panel'
+        ]);
+        
         Auth::loginUsingId($user->id, true);
         return redirect()->route('dashboard')->with('success', "You are logged in as $user->name !");
     }
